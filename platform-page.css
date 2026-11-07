@@ -1,10 +1,18 @@
 :root{color-scheme:light;--navy:#192957;--blue:#315c9a;--pale:#e7eff8;--ink:#18264b;--muted:#5d6d86;--line:#d2ddeb;--white:#fff}
 *{box-sizing:border-box}
 body{margin:0;background:#f3f6fb;color:var(--ink);font:17px/1.55 "Segoe UI",Arial,sans-serif}
-.top{background:var(--navy);color:#fff;padding:26px 20px 30px}
+.top{background:var(--navy);color:#fff;padding:22px 20px}
 .wrap{width:min(940px,100% - 32px);margin:auto}
+.top-inner{display:flex;justify-content:space-between;align-items:center;gap:20px}
 .brand{font-size:clamp(28px,5vw,40px);font-weight:750;letter-spacing:.04em;margin:0}
 .tagline{font-size:18px;color:#e4ecf8;margin:2px 0 0}
+.top-contact{text-align:right;color:#fff;font-size:15px;line-height:1.4}
+.top-contact strong,.top-contact .contact-name{display:block}
+.top-contact .contact-name{margin-top:2px}
+.top-contact a{color:#fff;text-decoration:none}
+.top-contact a:hover{text-decoration:underline}
+.top-whatsapp{display:inline-flex;align-items:center;justify-content:flex-end;gap:7px;margin-top:3px}
+.top-whatsapp svg{width:19px;height:19px;fill:currentColor;flex:none}
 main{padding:28px 0 48px}
 .back{color:var(--blue);font-weight:700;text-decoration:none}
 h1{font-size:30px;margin:18px 0 2px}
@@ -24,4 +32,4 @@ h1{font-size:30px;margin:18px 0 2px}
 .asset-list{display:flex;flex-wrap:wrap;gap:10px}
 .empty{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
 footer{text-align:center;padding:18px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
-@media(max-width:560px){.release-head{display:block}.date{display:block;margin-top:8px}}
+@media(max-width:560px){.release-head{display:block}.date{display:block;margin-top:8px}.top-inner{align-items:flex-start;flex-direction:column}.top-contact{text-align:left}}
