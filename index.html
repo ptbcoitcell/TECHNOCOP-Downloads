@@ -10,10 +10,15 @@
     :root{color-scheme:light;--navy:#192957;--blue:#315c9a;--pale:#e7eff8;--ink:#18264b;--muted:#5d6d86;--line:#d2ddeb;--white:#fff}
     *{box-sizing:border-box}
     body{margin:0;background:#f3f6fb;color:var(--ink);font:17px/1.55 "Segoe UI",Arial,sans-serif}
-    .top{background:var(--navy);color:#fff;padding:28px 20px 32px}
+    .top{background:var(--navy);color:#fff;padding:24px 20px}
     .wrap{width:min(940px,100% - 32px);margin:auto}
+    .top-inner{display:flex;justify-content:space-between;align-items:center;gap:20px}
     .brand{font-size:clamp(28px,5vw,42px);font-weight:750;letter-spacing:.04em;margin:0}
     .tagline{font-size:18px;color:#e4ecf8;margin:2px 0 0}
+    .top-contact{text-align:right;color:#fff;font-size:15px}
+    .top-contact strong{display:block}
+    .top-contact a{color:#fff;text-decoration:none}
+    .top-contact a:hover{text-decoration:underline}
     main{padding:28px 0 48px}
     .intro{margin:0 0 22px;color:var(--muted)}
     .section-title{font-size:23px;margin:0 0 14px}
@@ -33,19 +38,15 @@
     .release span{font-size:14px;color:var(--muted)}
     .text-link{color:var(--blue);font-weight:700;white-space:nowrap}
     .notice{margin-top:22px;padding:16px 18px;border-radius:12px;background:#fff8e7;border:1px solid #f0dfae;color:#574719;font-size:14px}
-    .contact{margin-top:20px}
-    .contact p{margin:5px 0}
-    .contact .button{margin-top:10px;background:#168a56}
-    .contact .button:hover{background:#117247}
     footer{text-align:center;padding:18px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
-    @media(max-width:520px){.release{align-items:flex-start;flex-direction:column;gap:6px}.top{padding-top:22px}}
+    @media(max-width:520px){.release{align-items:flex-start;flex-direction:column;gap:6px}.top-inner{align-items:flex-start;flex-direction:column}.top-contact{text-align:left}}
   </style>
 </head>
 <body>
   <header class="top">
-    <div class="wrap">
-      <h1 class="brand">TECHNOCOP</h1>
-      <p class="tagline">PTB in your fingertips</p>
+    <div class="wrap top-inner">
+      <div><h1 class="brand">TECHNOCOP</h1><p class="tagline">PTB in your fingertips</p></div>
+      <div class="top-contact"><strong>Contact: R.A. ARULKALAISELVAN, SI (T)</strong><a href="https://wa.me/919445797535" target="_blank" rel="noopener noreferrer">WhatsApp: 9445797535</a></div>
     </div>
   </header>
   <main class="wrap">
@@ -76,12 +77,6 @@
     </div>
 
     <aside class="notice"><strong>iPhone / iPad installation:</strong> iOS apps must be signed and distributed using a method supported for the target devices. A direct IPA link does not by itself bypass Apple’s installation and provisioning requirements.</aside>
-    <section class="card contact" aria-labelledby="contact-title">
-      <h2 class="section-title" id="contact-title">Contact Us</h2>
-      <p><strong>R.A. ARULKALAISELVAN, SI (T)</strong></p>
-      <p>WhatsApp: 9445797535</p>
-      <a class="button" href="https://wa.me/919445797535" target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a>
-    </section>
   </main>
   <footer>TECHNOCOP · PTB in your fingertips</footer>
 </body>
