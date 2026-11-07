@@ -27,6 +27,7 @@ h1{font-size:30px;margin:18px 0 2px}
 .date,.tag{font-size:14px}
 .tag{margin:6px 0 10px}
 .notes{margin:10px 0 16px;overflow-wrap:anywhere}
+.notes a{color:var(--blue);text-decoration:underline;font-weight:600}
 .button{display:inline-flex;align-items:center;justify-content:center;background:var(--navy);color:#fff;text-decoration:none;font-weight:700;padding:10px 15px;border-radius:9px;min-height:44px;overflow-wrap:anywhere}
 .button:hover{background:#29477e}
 .asset-list{display:flex;flex-wrap:wrap;gap:10px}
