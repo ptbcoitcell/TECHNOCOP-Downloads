@@ -1,66 +1,36 @@
-const owner = "ptbcoitcell";
-const repo = "TECHNOCOP-Downloads";
-
-const config = {
-  android: { label: "Android", ext: ".apk", icon: "ANDROID" },
-  windows: { label: "Windows", ext: ".exe", icon: "WINDOWS" },
-  ios: { label: "iOS", ext: ".ipa", icon: "iOS" }
-};
-
-const platformKey = document.body.dataset.platform;
-const platform = config[platformKey];
-const list = document.querySelector("#release-list");
-const status = document.querySelector("#release-status");
-const archiveLink = `https://github.com/${owner}/${repo}/releases`;
-
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>\"']/g, char => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
-  }[char]));
-}
-
-function prettyDate(value) {
-  if (!value) return "";
-  const date = new Date(value);
-  return Number.isNaN(date.valueOf()) ? "" : date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
-}
-
-function render(releases) {
-  const matches = releases
-    .map(release => ({ release, assets: (release.assets || []).filter(asset => asset.name.toLowerCase().endsWith(platform.ext)) }))
-    .filter(entry => entry.assets.length);
-
-  if (!matches.length) {
-    status.textContent = `No ${platform.label} installers are listed yet. Check the GitHub release archive or try again after a release is published.`;
-    return;
-  }
-
-  status.textContent = `${matches.length} ${platform.label} release${matches.length === 1 ? "" : "s"} found.`;
-  list.innerHTML = matches.map(({ release, assets }) => `
-    <article class="release-card">
-      <div class="release-head">
-        <div><span class="platform">${platform.icon}</span><h2>${escapeHtml(release.name || release.tag_name)}</h2></div>
-        <span class="date">${escapeHtml(prettyDate(release.published_at))}</span>
-      </div>
-      <p class="tag">Version ${escapeHtml(release.tag_name)}</p>
-      ${release.body ? `<p class="notes">${escapeHtml(release.body).replace(/\r?\n/g, "<br>")}</p>` : ""}
-      <div class="asset-list">${assets.map(asset => `
-        <a class="button" href="${escapeHtml(asset.browser_download_url)}">Download ${escapeHtml(asset.name)}</a>
-      `).join("")}</div>
-    </article>
-  `).join("");
-}
-
-fetch(`https://api.github.com/repos/${owner}/${repo}/releases?per_page=100`, {
-  headers: { Accept: "application/vnd.github+json" }
-})
-  .then(response => {
-    if (!response.ok) throw new Error(`GitHub returned ${response.status}`);
-    return response.json();
-  })
-  .then(render)
-  .catch(() => {
-    status.textContent = "Could not load the release list right now. Use the GitHub release archive below.";
-  });
-
-document.querySelectorAll(".archive-link").forEach(link => link.href = archiveLink);
+:root{color-scheme:light;--navy:#192957;--blue:#315c9a;--pale:#e7eff8;--ink:#18264b;--muted:#5d6d86;--line:#d2ddeb;--white:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:#f3f6fb;color:var(--ink);font:17px/1.55 "Segoe UI",Arial,sans-serif}
+.top{background:var(--navy);color:#fff;padding:22px 20px}
+.wrap{width:min(940px,100% - 32px);margin:auto}
+.top-inner{display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font-size:clamp(28px,5vw,40px);font-weight:750;letter-spacing:.04em;margin:0}
+.tagline{font-size:18px;color:#e4ecf8;margin:2px 0 0}
+.top-contact{text-align:right;color:#fff;font-size:15px;line-height:1.4}
+.top-contact strong,.top-contact .contact-name{display:block}
+.top-contact .contact-name{margin-top:2px}
+.top-contact a{color:#fff;text-decoration:none}
+.top-contact a:hover{text-decoration:underline}
+.top-whatsapp{display:inline-flex;align-items:center;justify-content:flex-end;gap:7px;margin-top:3px}
+.top-whatsapp svg{width:19px;height:19px;fill:currentColor;flex:none}
+main{padding:28px 0 48px}
+.back{color:var(--blue);font-weight:700;text-decoration:none}
+h1{font-size:30px;margin:18px 0 2px}
+.intro,.status,.date,.tag{color:var(--muted)}
+.intro{margin:0 0 18px}
+.status{margin:0 0 14px}
+.release-card{background:var(--white);border:1px solid var(--line);border-radius:15px;padding:20px;margin:14px 0;box-shadow:0 5px 18px #1929570c}
+.release-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.release-head>div{display:flex;align-items:center;gap:12px}
+.release-head h2{font-size:21px;margin:0}
+.platform{display:inline-block;background:var(--pale);color:var(--blue);font-weight:700;border-radius:999px;padding:4px 12px;font-size:13px}
+.date,.tag{font-size:14px}
+.tag{margin:6px 0 10px}
+.notes{margin:10px 0 16px;overflow-wrap:anywhere}
+.notes a{color:var(--blue);text-decoration:underline;font-weight:600}
+.button{display:inline-flex;align-items:center;justify-content:center;background:var(--navy);color:#fff;text-decoration:none;font-weight:700;padding:10px 15px;border-radius:9px;min-height:44px;overflow-wrap:anywhere}
+.button:hover{background:#29477e}
+.asset-list{display:flex;flex-wrap:wrap;gap:10px}
+.empty{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
+footer{text-align:center;padding:18px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
+@media(max-width:560px){.release-head{display:block}.date{display:block;margin-top:8px}.top-inner{align-items:flex-start;flex-direction:column}.top-contact{text-align:left}}
