@@ -24,12 +24,18 @@
     .top-whatsapp svg{width:19px;height:19px;fill:currentColor;flex:none}
     main{padding:28px 0 48px}
     .intro{margin:0 0 22px;color:var(--muted)}
-    .section-title{font-size:23px;margin:0 0 14px}
+    .section-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px;margin:0 0 14px}
+    .section-title{font-size:23px;margin:0}
+    .total-summary{font-size:14px;font-weight:600;color:var(--muted);margin:0}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:18px}
     .card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 5px 18px #1929570c}
     .platform{display:inline-block;background:var(--pale);color:var(--blue);font-weight:700;border-radius:999px;padding:4px 12px;font-size:14px}
     .card h3{font-size:22px;margin:12px 0 2px}
-    .version{color:var(--muted);margin:0 0 16px}
+    .version{color:var(--muted);margin:0 0 8px}
+    .live-row{margin:0 0 16px;min-height:0}
+    .live-row:empty{display:none}
+    .live-count{display:inline-flex;align-items:center;gap:6px;background:var(--pale);color:var(--blue);font-size:13.5px;font-weight:700;padding:4px 11px;border-radius:999px}
+    .live-count svg{width:14px;height:14px;fill:currentColor;flex:none}
     .button{display:inline-flex;align-items:center;justify-content:center;background:var(--navy);color:white;text-decoration:none;font-weight:700;padding:11px 18px;border-radius:9px;min-height:46px}
     .button:hover{background:#29477e}
     .subtle{font-size:14px;color:var(--muted);margin:13px 0 0}
@@ -54,26 +60,32 @@
   </header>
   <main class="wrap">
     <p class="intro">Download the current TECHNOCOP app for your device. Previous versions are listed below.</p>
-    <h2 class="section-title">Latest versions</h2>
+    <div class="section-head">
+      <h2 class="section-title">Latest versions</h2>
+      <p class="total-summary" id="total-downloads"></p>
+    </div>
     <div class="grid">
-      <article class="card">
+      <article class="card" data-platform="android">
         <span class="platform">ANDROID</span>
         <h3>TECHNOCOP for Android</h3>
-        <p class="version">Version 3.4</p>
+        <p class="version" data-version>Version 3.4</p>
+        <div class="live-row" data-live-row></div>
         <a class="button" href="android.html">Choose Android version</a>
         <p class="subtle">Android installation may ask you to allow installs from your browser. Install only the APK published under TECHNOCOP Releases.</p>
       </article>
-      <article class="card">
+      <article class="card" data-platform="windows">
         <span class="platform">WINDOWS 10+</span>
         <h3>TECHNOCOP for Windows</h3>
-        <p class="version">Version 2.4.0</p>
+        <p class="version" data-version>Version 2.4.0</p>
+        <div class="live-row" data-live-row></div>
         <a class="button" href="windows.html">Choose Windows version</a>
         <p class="subtle">If Windows displays a security prompt, verify that you downloaded the installer from this official TECHNOCOP page.</p>
       </article>
-      <article class="card">
+      <article class="card" data-platform="ios">
         <span class="platform">iOS</span>
         <h3>TECHNOCOP for iPhone and iPad</h3>
-        <p class="version">Latest iOS version</p>
+        <p class="version" data-version>Latest iOS version</p>
+        <div class="live-row" data-live-row></div>
         <a class="button" href="ios.html">Choose iOS version</a>
         <p class="subtle">iOS installation depends on the app’s signing and distribution method. The IPA must be provisioned for your device or distributed through an approved channel; downloading the file alone may not install it.</p>
       </article>
@@ -82,5 +94,58 @@
     <aside class="notice"><strong>iPhone / iPad installation:</strong> iOS apps must be signed and distributed using a method supported for the target devices. A direct IPA link does not by itself bypass Apple’s installation and provisioning requirements.</aside>
   </main>
   <footer>TECHNOCOP · PTB in your fingertips</footer>
+  <script>
+    (function () {
+      const extMap = { android: ".apk", windows: ".exe", ios: ".ipa" };
+      const fmt = n => `${Number(n || 0).toLocaleString()} download${Number(n || 0) === 1 ? "" : "s"}`;
+      const iconSvg = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a1 1 0 0 1 1 1v9.59l2.3-2.3a1 1 0 1 1 1.4 1.42l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.42l2.3 2.3V4a1 1 0 0 1 1-1Zm-7 14a1 1 0 0 1 1 1v1h12v-1a1 1 0 1 1 2 0v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1Z"/></svg>`;
+
+      fetch("https://api.github.com/repos/ptbcoitcell/TECHNOCOP-Downloads/releases?per_page=100", {
+        cache: "no-store",
+        headers: { Accept: "application/vnd.github+json" }
+      })
+        .then(r => (r.ok ? r.json() : Promise.reject()))
+        .then(releases => {
+          const sorted = [...releases].sort((a, b) => new Date(b.published_at || b.created_at) - new Date(a.published_at || a.created_at));
+          let grandTotal = 0;
+
+          Object.entries(extMap).forEach(([key, ext]) => {
+            const card = document.querySelector(`.card[data-platform="${key}"]`);
+            if (!card) return;
+            const entries = sorted
+              .map(rel => ({ rel, assets: (rel.assets || []).filter(a => a.name.toLowerCase().endsWith(ext)) }))
+              .filter(e => e.assets.length);
+            if (!entries.length) return;
+
+            const latest = entries[0];
+            const latestCount = latest.assets.reduce((s, a) => s + Number(a.download_count || 0), 0);
+            const platformCount = entries.reduce((s, e) => s + e.assets.reduce((aSum, a) => aSum + Number(a.download_count || 0), 0), 0);
+            grandTotal += platformCount;
+
+            const versionEl = card.querySelector("[data-version]");
+            if (versionEl) {
+              const rawVer = latest.rel.name || latest.rel.tag_name || "";
+              const cleanVer = rawVer.replace(/^(?:TECHNOCOP\s+)?(?:iOS|Windows|Android)?[-\s]*v?/i, "").trim();
+              if (cleanVer) versionEl.textContent = `Version ${cleanVer}`;
+            }
+
+            const rowEl = card.querySelector("[data-live-row]");
+            if (rowEl) {
+              const label = platformCount > latestCount
+                ? `${fmt(latestCount)} (latest) · ${fmt(platformCount)} total`
+                : fmt(platformCount);
+              rowEl.innerHTML = `<span class="live-count">${iconSvg}<span></span></span>`;
+              rowEl.querySelector("span > span").textContent = label;
+            }
+          });
+
+          const totalEl = document.querySelector("#total-downloads");
+          if (totalEl && grandTotal > 0) {
+            totalEl.textContent = `Total downloads: ${Number(grandTotal).toLocaleString()}`;
+          }
+        })
+        .catch(() => {});
+    })();
+  </script>
 </body>
 </html>
